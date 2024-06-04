@@ -42,7 +42,17 @@
 
 # 文档
 
-安装及使用：https://233boy.com/sing-box/sing-box-script/
+安装
+系统支持：Ubuntu，Debian，CentOS，推荐使用 Ubuntu 22，谨慎使用 CentOS，脚本可能无法正常运行！
+
+执行如下命令：
+
+bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh)
+如果需要指定 sing-box 版本，请在安装命令后面加 -v ver 参数
+
+如需查看安装命令帮助，在安装命令后面加 -h 即可
+
+脚本在安装完成后会自动创建一个 VLESS-REALITY 配置
 
 # 帮助
 
@@ -109,6 +119,6 @@ Usage: sing-box [options]... [args]...
    h, help                                         显示此帮助界面
 
 谨慎使用 del, ddel, 此选项会直接删除配置; 无需确认
-反馈问题) https://github.com/233boy/sing-box/issues
+
 文档(doc) https://233boy.com/sing-box/sing-box-script/
 ```
