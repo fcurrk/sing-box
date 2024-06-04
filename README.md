@@ -47,7 +47,9 @@
 
 执行如下命令：
 
+```bash
 bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh)
+```
 
 如果需要指定 sing-box 版本，请在安装命令后面加 -v ver 参数
 
