@@ -685,8 +685,8 @@ uninstall() {
     fi
     [[ $is_install_sh ]] && return # reinstall
     _green "\n卸载完成!"
-    msg "脚本哪里需要完善? 请反馈"
-    msg "反馈问题) $(msg_ul https://github.com/${is_sh_repo}/issues)\n"
+#    msg "脚本哪里需要完善? 请反馈"
+#    msg "反馈问题) $(msg_ul https://github.com/${is_sh_repo}/issues)\n"
 }
 
 # manage run status
@@ -1472,13 +1472,13 @@ update() {
     fi
     download $is_update_name $is_new_ver
     msg "更新成功, 当前 $is_show_name 版本: $(_green $is_new_ver)\n"
-    msg "$(_green 请查看更新说明: https://github.com/$is_update_repo/releases/tag/$is_new_ver)\n"
+#    msg "$(_green 请查看更新说明: https://github.com/$is_update_repo/releases/tag/$is_new_ver)\n"
     [[ $is_update_name != 'sh' ]] && manage restart $is_update_name &
 }
 
 # main menu; if no prefer args.
 is_main_menu() {
-    msg "\n------------- $is_core_name script $is_sh_ver by $author -------------"
+    msg "\n----------------- $is_core_name script $is_sh_ver -----------------"
     msg "$is_core_name $is_core_ver: $is_core_status"
 #    msg "群组(Chat): $(msg_ul https://t.me/tg233boy)"
     is_main_start=1
