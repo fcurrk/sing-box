@@ -57,6 +57,18 @@ bash <(wget -qO- -o- https://github.com/fcurrk/sing-box/raw/main/install.sh)
 
 脚本在安装完成后会自动创建一个 VLESS-REALITY 配置
 
+目录
+sing-box 脚本全部保存在 /etc/sing-box
+
+脚本：/etc/sing-box/sh
+核心：/etc/sing-box/bin
+配置：/etc/sing-box/conf
+
+卸载
+```bash
+sb uninstall
+```
+
 # 帮助
 
 使用：`sing-box help`
@@ -123,5 +135,5 @@ Usage: sing-box [options]... [args]...
 
 谨慎使用 del, ddel, 此选项会直接删除配置; 无需确认
 
-文档(doc) https://233boy.com/sing-box/sing-box-script/
 ```
+更多内容访问原作者文档(doc) https://233boy.com/sing-box/sing-box-script/
