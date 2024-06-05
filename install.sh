@@ -1,7 +1,7 @@
 #!/bin/bash
 
-author=233boy
-# github=https://github.com/233boy/sing-box
+author=fcurrk
+# github=https://github.com/fcurrk/sing-box
 
 # bash fonts colors
 red='\e[31m'
@@ -423,9 +423,13 @@ main() {
     # create condf dir
     mkdir -p $is_conf_dir
 
-    load core.sh
-    # create a reality config
-    add reality
+    read -p "是否创建默认配置？(输入y创建): " input
+    if [[ $input == "y" ]]; then
+        load core.sh
+        # create a reality config
+        add reality
+    fi
+
     # remove tmp dir and exit.
     exit_and_del_tmpdir ok
 }
