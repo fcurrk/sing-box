@@ -42,7 +42,8 @@
 
 # 文档
 
-安装
+### 安装
+
 系统支持：Ubuntu，Debian，CentOS，推荐使用 Ubuntu 22，谨慎使用 CentOS，脚本可能无法正常运行！
 
 执行如下命令：
@@ -55,16 +56,19 @@ bash <(wget -qO- -o- https://github.com/fcurrk/sing-box/raw/main/install.sh)
 
 如需查看安装命令帮助，在安装命令后面加 -h 即可
 
-脚本在安装完成后会自动创建一个 VLESS-REALITY 配置
+脚本在安装完成后会询问是否创建一个 VLESS-REALITY 初始配置
 
-目录
+### 目录
+
 sing-box 脚本全部保存在 /etc/sing-box
 
 脚本：/etc/sing-box/sh
+
 核心：/etc/sing-box/bin
+
 配置：/etc/sing-box/conf
 
-卸载
+### 卸载
 ```bash
 sb uninstall
 ```
