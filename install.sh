@@ -308,7 +308,7 @@ main() {
     # show welcome msg
     clear
     echo
-    echo "........... $is_core_name script by $author .........."
+    echo ".............. $is_core_name script ............."
     echo
 
     # start installing...
@@ -428,6 +428,9 @@ main() {
         load core.sh
         # create a reality config
         add reality
+    else
+        load core.sh
+	create config.json
     fi
 
     # remove tmp dir and exit.
