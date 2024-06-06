@@ -424,7 +424,7 @@ main() {
     mkdir -p $is_conf_dir
 
     read -p "是否创建默认配置？(输入y创建): " input
-    if [[ $input == "y" ]]; then
+    if [[ $input == "y" || $input == "Y" ]]; then
         load core.sh
         # create a reality config
         add reality
