@@ -1516,7 +1516,7 @@ is_main_menu() {
         show_help
         ;;
     9)
-        ask list is_do_other "启用BBR 查看日志 测试运行 重装脚本 设置DNS"
+        ask list is_do_other "启用BBR 查看日志 测试运行 重装脚本 设置DNS 添加NO-AUTO-TLS配置"
         case $REPLY in
         1)
             load bbr.sh
@@ -1534,6 +1534,10 @@ is_main_menu() {
         5)
             load dns.sh
             dns_set
+            ;;
+        6)
+            is_no_auto_tls=1
+            add
             ;;
         esac
         ;;
