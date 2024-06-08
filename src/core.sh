@@ -90,6 +90,11 @@ servername_list=(
     www.cloudflare.com
     dash.cloudflare.com
     aws.amazon.com
+    m.media-amazon.com
+    updates.cdn-apple.com
+    addons.mozilla.org
+    www.lovelive-anime.jp
+    d1.awsstatic.com
 )
 
 is_random_ss_method=${ss_method_list[$(shuf -i 4-6 -n1)]} # random only use ss2022
