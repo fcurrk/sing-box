@@ -34,9 +34,9 @@ warn() {
 # root
 [[ $EUID != 0 ]] && err "当前非 ${yellow}ROOT用户.${none}"
 
-# yum or apt-get, ubuntu/debian/centos
-cmd=$(type -P apt-get || type -P yum)
-[[ ! $cmd ]] && err "此脚本仅支持 ${yellow}(Ubuntu or Debian or CentOS)${none}."
+# apt-get, yum or zypper, ubuntu/debian/centos/suse
+cmd=$(type -P apt-get || type -P yum || type -P zypper)
+[[ ! $cmd ]] && err "此脚本仅支持 ${yellow}(Ubuntu or Debian or CentOS or SUSE)${none}."
 
 # systemd
 [[ ! $(type -P systemctl) ]] && {
@@ -144,7 +144,11 @@ install_pkg() {
         $cmd install -y $pkg &>/dev/null
         if [[ $? != 0 ]]; then
             [[ $cmd =~ yum ]] && yum install epel-release -y &>/dev/null
-            $cmd update -y &>/dev/null
+            if [[ $cmd =~ zypper ]]; then
+                $cmd --non-interactive refresh &>/dev/null
+            else
+                $cmd update -y &>/dev/null
+            fi
             $cmd install -y $pkg &>/dev/null
             [[ $? == 0 ]] && >$is_pkg_ok
         else
@@ -159,7 +163,7 @@ install_pkg() {
 download() {
     case $1 in
     core)
-        [[ ! $is_core_ver ]] && is_core_ver=$(_wget -qO- "https://api.github.com/repos/${is_core_repo}/releases/latest?v=$RANDOM" | grep tag_name | egrep -o 'v([0-9.]+)')
+        [[ ! $is_core_ver ]] && is_core_ver=$(_wget -qO- "https://api.github.com/repos/${is_core_repo}/releases/latest?v=$RANDOM" | grep tag_name | grep -E -o 'v([0-9.]+)')
         [[ $is_core_ver ]] && link="https://github.com/${is_core_repo}/releases/download/${is_core_ver}/${is_core}-${is_core_ver:1}-linux-${is_arch}.tar.gz"
         name=$is_core_name
         tmpfile=$tmpcore
@@ -198,7 +202,7 @@ check_status() {
     # dependent pkg install fail
     [[ ! -f $is_pkg_ok ]] && {
         msg err "安装依赖包失败"
-        msg err "请尝试手动安装依赖包: $cmd update -y; $cmd install -y $pkg"
+        msg err "请尝试手动安装依赖包: $cmd update -y; $cmd install -y $is_pkg"
         is_fail=1
     }
 
