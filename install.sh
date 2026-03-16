@@ -34,13 +34,15 @@ warn() {
 # root
 [[ $EUID != 0 ]] && err "当前非 ${yellow}ROOT用户.${none}"
 
-# apt-get, yum or zypper, ubuntu/debian/centos/suse
-cmd=$(type -P apt-get || type -P yum || type -P zypper)
-[[ ! $cmd ]] && err "此脚本仅支持 ${yellow}(Ubuntu or Debian or CentOS or SUSE)${none}."
+# apt-get, yum, zypper or apk
+cmd=$(type -P apt-get || type -P yum || type -P zypper || type -P apk)
+[[ ! $cmd ]] && err "此脚本仅支持 ${yellow}(Ubuntu or Debian or CentOS or SUSE or Alpine)${none}."
 
-# systemd
-[[ ! $(type -P systemctl) ]] && {
-    err "此系统缺少 ${yellow}(systemctl)${none}, 请尝试执行:${yellow} ${cmd} update -y;${cmd} install systemd -y ${none}来修复此错误."
+# systemd or openrc
+is_systemd=$(type -P systemctl)
+is_openrc=$(type -P rc-service)
+[[ ! $is_systemd && ! $is_openrc ]] && {
+    err "此系统缺少 ${yellow}(systemctl 或 rc-service)${none}, 请安装 systemd 或确认 OpenRC 已启用."
 }
 
 # wget installed or none
@@ -69,7 +71,7 @@ is_log_dir=/var/log/$is_core
 is_sh_bin=/usr/local/bin/$is_core
 is_sh_dir=$is_core_dir/sh
 is_sh_repo=$author/$is_core
-is_pkg="wget tar"
+is_pkg="wget tar bash"
 is_config_json=$is_core_dir/config.json
 tmp_var_lists=(
     tmpcore
@@ -141,19 +143,22 @@ install_pkg() {
     if [[ $cmd_not_found ]]; then
         pkg=$(echo $cmd_not_found | sed 's/,/ /g')
         msg warn "安装依赖包 >${pkg}"
-        $cmd install -y $pkg &>/dev/null
-        if [[ $? != 0 ]]; then
-            [[ $cmd =~ yum ]] && yum install epel-release -y &>/dev/null
-            if [[ $cmd =~ zypper ]]; then
-                $cmd --non-interactive refresh &>/dev/null
-            else
-                $cmd update -y &>/dev/null
-            fi
-            $cmd install -y $pkg &>/dev/null
-            [[ $? == 0 ]] && >$is_pkg_ok
+        if [[ $cmd =~ apk ]]; then
+            apk update &>/dev/null
+            apk add $pkg &>/dev/null
         else
-            >$is_pkg_ok
+            $cmd install -y $pkg &>/dev/null
+            if [[ $? != 0 ]]; then
+                [[ $cmd =~ yum ]] && yum install epel-release -y &>/dev/null
+                if [[ $cmd =~ zypper ]]; then
+                    $cmd --non-interactive refresh &>/dev/null
+                else
+                    $cmd update -y &>/dev/null
+                fi
+                $cmd install -y $pkg &>/dev/null
+            fi
         fi
+        [[ $? == 0 ]] && >$is_pkg_ok
     else
         >$is_pkg_ok
     fi
@@ -333,10 +338,12 @@ main() {
         msg warn "${yellow}本地获取安装脚本 > $PWD ${none}"
     }
 
-    timedatectl set-ntp true &>/dev/null
-    [[ $? != 0 ]] && {
-        is_ntp_on=1
-    }
+    if [[ $is_systemd ]]; then
+        timedatectl set-ntp true &>/dev/null
+        [[ $? != 0 ]] && {
+            is_ntp_on=1
+        }
+    fi
 
     # install dependent pkg
     install_pkg $is_pkg &
@@ -346,6 +353,10 @@ main() {
         >$is_jq_ok
     else
         jq_not_found=1
+        # Alpine: install jq via apk instead of downloading glibc binary
+        [[ $cmd =~ apk ]] && {
+            apk add jq &>/dev/null && jq_not_found= && >$is_jq_ok
+        }
     fi
     # if wget installed. download core, sh, jq, get ip
     [[ $is_wget ]] && {
@@ -420,7 +431,7 @@ main() {
     # show a tips msg
     msg ok "生成配置文件..."
 
-    # create systemd service
+    # create service
     load systemd.sh
     is_new_install=1
     install_service $is_core &>/dev/null
