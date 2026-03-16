@@ -77,12 +77,15 @@ install_service_openrc() {
 
 name="$is_core_name"
 description="$is_core_name Service"
+
 command="$is_core_bin"
 command_args="run -c $is_config_json -C $is_conf_dir"
 command_background=true
 pidfile="/run/\${RC_SVCNAME}.pid"
 output_log="/var/log/$is_core/access.log"
 error_log="/var/log/$is_core/error.log"
+
+supervisor=supervise-daemon
 
 depend() {
     need net
@@ -97,10 +100,13 @@ EOF
 
 name="Caddy"
 description="Caddy web server"
+
 command="$is_caddy_bin"
 command_args="run --environ --config $is_caddyfile --adapter caddyfile"
 command_background=true
 pidfile="/run/\${RC_SVCNAME}.pid"
+
+supervisor=supervise-daemon
 
 depend() {
     need net
