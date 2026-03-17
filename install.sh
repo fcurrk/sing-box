@@ -209,7 +209,11 @@ check_status() {
     # dependent pkg install fail
     [[ ! -f $is_pkg_ok ]] && {
         msg err "安装依赖包失败"
-        msg err "请尝试手动安装依赖包: $cmd update -y; $cmd install -y $is_pkg"
+        if [[ $cmd =~ apk ]]; then
+            msg err "请尝试手动安装依赖包: apk update; apk add $is_pkg"
+        else
+            msg err "请尝试手动安装依赖包: $cmd update -y; $cmd install -y $is_pkg"
+        fi
         is_fail=1
     }
 
