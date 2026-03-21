@@ -353,7 +353,10 @@ main() {
 
     # install dependent pkg
     if [[ $cmd =~ apk ]]; then
-        install_pkg $is_pkg
+        # Alpine: force install full versions to replace BusyBox applets
+        apk update &>/dev/null
+        apk add $is_pkg &>/dev/null
+        [[ $? == 0 ]] && >$is_pkg_ok
     else
         install_pkg $is_pkg &
     fi
