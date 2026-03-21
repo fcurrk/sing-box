@@ -73,7 +73,7 @@ is_sh_dir=$is_core_dir/sh
 is_sh_repo=$author/$is_core
 is_pkg="wget tar bash"
 # Alpine: gcompat provides glibc compatibility for prebuilt binaries
-[[ $cmd =~ apk ]] && is_pkg="$is_pkg gcompat"
+[[ $cmd =~ apk ]] && is_pkg="$is_pkg gcompat jq"
 is_config_json=$is_core_dir/config.json
 tmp_var_lists=(
     tmpcore
@@ -352,17 +352,17 @@ main() {
     fi
 
     # install dependent pkg
-    install_pkg $is_pkg &
+    if [[ $cmd =~ apk ]]; then
+        install_pkg $is_pkg
+    else
+        install_pkg $is_pkg &
+    fi
 
     # jq
     if [[ $(type -P jq) ]]; then
         >$is_jq_ok
     else
         jq_not_found=1
-        # Alpine: install jq via apk instead of downloading glibc binary
-        [[ $cmd =~ apk ]] && {
-            apk add jq &>/dev/null && jq_not_found= && >$is_jq_ok
-        }
     fi
     # if wget installed. download core, sh, jq, get ip
     [[ $is_wget ]] && {
