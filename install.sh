@@ -448,6 +448,8 @@ main() {
     load core.sh
     # create a reality config
     add reality
+    # wait for background tasks (e.g., OpenRC service start)
+    wait
     # remove tmp dir and exit.
     exit_and_del_tmpdir ok
 }
