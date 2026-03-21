@@ -353,7 +353,10 @@ main() {
 
     # install dependent pkg
     if [[ $cmd =~ apk ]]; then
-        install_pkg $is_pkg
+        # Alpine: force install full versions to replace BusyBox applets
+        apk update &>/dev/null
+        apk add $is_pkg &>/dev/null
+        [[ $? == 0 ]] && >$is_pkg_ok
     else
         install_pkg $is_pkg &
     fi
@@ -448,6 +451,8 @@ main() {
     load core.sh
     # create a reality config
     add reality
+    # wait for background tasks (e.g., OpenRC service start)
+    wait
     # remove tmp dir and exit.
     exit_and_del_tmpdir ok
 }
