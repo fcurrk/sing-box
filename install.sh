@@ -1,7 +1,7 @@
 #!/bin/bash
 
-author=233boy
-# github=https://github.com/233boy/sing-box
+author=fcurrk
+# github=https://github.com/fcurrk/sing-box
 
 # bash fonts colors
 red='\e[31m'
@@ -303,7 +303,7 @@ exit_and_del_tmpdir() {
     [[ ! $1 ]] && {
         msg err "哦豁.."
         msg err "安装过程出现错误..."
-        echo -e "反馈问题) https://github.com/${is_sh_repo}/issues"
+#        echo -e "反馈问题) https://github.com/${is_sh_repo}/issues"
         echo
         exit 1
     }
@@ -324,7 +324,7 @@ main() {
     # show welcome msg
     clear
     echo
-    echo "........... $is_core_name script by $author .........."
+    echo ".............. $is_core_name script ............."
     echo
 
     # start installing...
@@ -448,11 +448,18 @@ main() {
     # create condf dir
     mkdir -p $is_conf_dir
 
-    load core.sh
-    # create a reality config
-    add reality
-    # wait for background tasks (e.g., OpenRC service start)
-    wait
+    read -p "是否创建默认配置？(输入y创建): " input
+    if [[ $input == "y" || $input == "Y" ]]; then
+        load core.sh
+        # create a reality config
+        add reality
+	# wait for background tasks (e.g., OpenRC service start)
+    	wait
+    else
+        load core.sh
+	create config.json
+    fi
+
     # remove tmp dir and exit.
     exit_and_del_tmpdir ok
 }
